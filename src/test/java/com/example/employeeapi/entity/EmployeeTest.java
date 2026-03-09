@@ -1,0 +1,33 @@
+package com.example.employeeapi.entity;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class EmployeeTest {
+
+    @Test
+    @DisplayName("default constructor and setters work")
+    void defaultConstructorAndSetters() {
+        Employee employee = new Employee();
+        employee.setId(1L);
+        employee.setName("John");
+        employee.setEmail("john@example.com");
+        employee.setDepartment("IT");
+
+        assertThat(employee.getId()).isEqualTo(1L);
+        assertThat(employee.getName()).isEqualTo("John");
+        assertThat(employee.getEmail()).isEqualTo("john@example.com");
+        assertThat(employee.getDepartment()).isEqualTo("IT");
+    }
+
+    @Test
+    @DisplayName("all-args constructor sets fields")
+    void allArgsConstructor() {
+        Employee employee = new Employee("Jane", "jane@example.com", "HR");
+        assertThat(employee.getName()).isEqualTo("Jane");
+        assertThat(employee.getEmail()).isEqualTo("jane@example.com");
+        assertThat(employee.getDepartment()).isEqualTo("HR");
+    }
+}
