@@ -1,3 +1,8 @@
+app:
+  cors:
+    # Allowed origins for the React UI (separate deployment). Comma-separated.
+    allowed-origins: http://localhost:3000,http://localhost:4173
+
 spring:
   application:
     name: employee-api
