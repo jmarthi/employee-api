@@ -8,7 +8,8 @@ export default function EmployeeForm() {
   const isEdit = id && id !== 'new';
   const navigate = useNavigate();
 
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [department, setDepartment] = useState('');
   const [loading, setLoading] = useState(isEdit);
@@ -25,7 +26,8 @@ export default function EmployeeForm() {
     getEmployee(id)
       .then((emp) => {
         if (!cancelled) {
-          setName(emp.name || '');
+          setFirstName(emp.firstName || '');
+          setLastName(emp.lastName || '');
           setEmail(emp.email || '');
           setDepartment(emp.department || '');
         }
@@ -44,7 +46,8 @@ export default function EmployeeForm() {
     setError('');
     setSaving(true);
     const body = {
-      name: name.trim(),
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
       email: email.trim(),
       department: department.trim() || null,
     };
@@ -83,13 +86,22 @@ export default function EmployeeForm() {
         <div style={styles.card}>
           {error && <div style={styles.error}>{error}</div>}
           <form onSubmit={handleSubmit} style={styles.form}>
-            <label style={styles.label}>Name *</label>
+            <label style={styles.label}>First name *</label>
             <input
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
               required
-              placeholder="e.g. John Doe"
+              placeholder="e.g. John"
+              style={styles.input}
+            />
+            <label style={styles.label}>Last name *</label>
+            <input
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
+              placeholder="e.g. Doe"
               style={styles.input}
             />
             <label style={styles.label}>Email *</label>

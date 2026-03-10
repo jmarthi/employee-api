@@ -8,8 +8,11 @@ public class EmployeeResponse {
     @Schema(description = "Unique identifier")
     private Long id;
 
-    @Schema(description = "Employee full name")
-    private String name;
+    @Schema(description = "Employee first name")
+    private String firstName;
+
+    @Schema(description = "Employee last name")
+    private String lastName;
 
     @Schema(description = "Employee email address")
     private String email;
@@ -20,9 +23,10 @@ public class EmployeeResponse {
     public EmployeeResponse() {
     }
 
-    public EmployeeResponse(Long id, String name, String email, String department) {
+    public EmployeeResponse(Long id, String firstName, String lastName, String email, String department) {
         this.id = id;
-        this.name = name;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.department = department;
     }
@@ -35,12 +39,20 @@ public class EmployeeResponse {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {

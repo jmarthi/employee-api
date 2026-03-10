@@ -11,10 +11,12 @@ class EmployeeRequestTest {
     @DisplayName("default constructor and setters")
     void gettersSetters() {
         EmployeeRequest req = new EmployeeRequest();
-        req.setName("John");
+        req.setFirstName("John");
+        req.setLastName("Doe");
         req.setEmail("john@example.com");
         req.setDepartment("IT");
-        assertThat(req.getName()).isEqualTo("John");
+        assertThat(req.getFirstName()).isEqualTo("John");
+        assertThat(req.getLastName()).isEqualTo("Doe");
         assertThat(req.getEmail()).isEqualTo("john@example.com");
         assertThat(req.getDepartment()).isEqualTo("IT");
     }
@@ -22,8 +24,9 @@ class EmployeeRequestTest {
     @Test
     @DisplayName("all-args constructor")
     void allArgsConstructor() {
-        EmployeeRequest req = new EmployeeRequest("Jane", "jane@example.com", "HR");
-        assertThat(req.getName()).isEqualTo("Jane");
+        EmployeeRequest req = new EmployeeRequest("Jane", "Smith", "jane@example.com", "HR");
+        assertThat(req.getFirstName()).isEqualTo("Jane");
+        assertThat(req.getLastName()).isEqualTo("Smith");
         assertThat(req.getEmail()).isEqualTo("jane@example.com");
         assertThat(req.getDepartment()).isEqualTo("HR");
     }

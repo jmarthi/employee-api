@@ -20,6 +20,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -41,8 +42,8 @@ class EmployeeControllerTest {
     @Test
     @DisplayName("POST /api/employees creates employee and returns 201")
     void createEmployee_returnsCreated() throws Exception {
-        EmployeeRequest request = new EmployeeRequest("John Doe", "john@example.com", "Engineering");
-        EmployeeResponse response = new EmployeeResponse(1L, "John Doe", "john@example.com", "Engineering");
+        EmployeeRequest request = new EmployeeRequest("John", "Doe", "john@example.com", "Engineering");
+        EmployeeResponse response = new EmployeeResponse(1L, "John", "Doe", "john@example.com", "Engineering");
         when(employeeService.createEmployee(any(EmployeeRequest.class))).thenReturn(response);
 
         mockMvc.perform(post("/api/employees")
@@ -50,7 +51,8 @@ class EmployeeControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("John Doe"))
+                .andExpect(jsonPath("$.firstName").value("John"))
+                .andExpect(jsonPath("$.lastName").value("Doe"))
                 .andExpect(jsonPath("$.email").value("john@example.com"))
                 .andExpect(jsonPath("$.department").value("Engineering"));
 
@@ -60,7 +62,7 @@ class EmployeeControllerTest {
     @Test
     @DisplayName("POST /api/employees with invalid body returns 400")
     void createEmployee_invalidBody_returnsBadRequest() throws Exception {
-        EmployeeRequest request = new EmployeeRequest("", "invalid-email", null);
+        EmployeeRequest request = new EmployeeRequest("", "", "invalid-email", null);
 
         mockMvc.perform(post("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -71,8 +73,8 @@ class EmployeeControllerTest {
     @Test
     @DisplayName("PUT /api/employees/{id} updates employee and returns 200")
     void updateEmployee_returnsOk() throws Exception {
-        EmployeeRequest request = new EmployeeRequest("Jane Doe", "jane@example.com", "HR");
-        EmployeeResponse response = new EmployeeResponse(1L, "Jane Doe", "jane@example.com", "HR");
+        EmployeeRequest request = new EmployeeRequest("Jane", "Doe", "jane@example.com", "HR");
+        EmployeeResponse response = new EmployeeResponse(1L, "Jane", "Doe", "jane@example.com", "HR");
         when(employeeService.updateEmployee(eq(1L), any(EmployeeRequest.class))).thenReturn(response);
 
         mockMvc.perform(put("/api/employees/1")
@@ -80,7 +82,8 @@ class EmployeeControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("Jane Doe"));
+                .andExpect(jsonPath("$.firstName").value("Jane"))
+                .andExpect(jsonPath("$.lastName").value("Doe"));
 
         verify(employeeService).updateEmployee(eq(1L), any(EmployeeRequest.class));
     }
@@ -88,7 +91,7 @@ class EmployeeControllerTest {
     @Test
     @DisplayName("PUT /api/employees/{id} when not found returns 404")
     void updateEmployee_notFound_returns404() throws Exception {
-        EmployeeRequest request = new EmployeeRequest("Jane", "jane@example.com", "HR");
+        EmployeeRequest request = new EmployeeRequest("Jane", "Doe", "jane@example.com", "HR");
         when(employeeService.updateEmployee(eq(999L), any(EmployeeRequest.class)))
                 .thenThrow(new EmployeeNotFoundException(999L));
 
@@ -101,13 +104,14 @@ class EmployeeControllerTest {
     @Test
     @DisplayName("GET /api/employees/{id} returns employee")
     void getEmployee_returnsOk() throws Exception {
-        EmployeeResponse response = new EmployeeResponse(1L, "John", "john@example.com", "IT");
+        EmployeeResponse response = new EmployeeResponse(1L, "John", "Doe", "john@example.com", "IT");
         when(employeeService.getEmployee(1L)).thenReturn(response);
 
         mockMvc.perform(get("/api/employees/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("John"));
+                .andExpect(jsonPath("$.firstName").value("John"))
+                .andExpect(jsonPath("$.lastName").value("Doe"));
 
         verify(employeeService).getEmployee(1L);
     }
@@ -125,16 +129,18 @@ class EmployeeControllerTest {
     @DisplayName("GET /api/employees returns all employees")
     void getAllEmployees_returnsOk() throws Exception {
         List<EmployeeResponse> list = List.of(
-                new EmployeeResponse(1L, "John", "john@example.com", "IT"),
-                new EmployeeResponse(2L, "Jane", "jane@example.com", "HR")
+                new EmployeeResponse(1L, "John", "Doe", "john@example.com", "IT"),
+                new EmployeeResponse(2L, "Jane", "Smith", "jane@example.com", "HR")
         );
         when(employeeService.getAllEmployees()).thenReturn(list);
 
         mockMvc.perform(get("/api/employees"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].name").value("John"))
-                .andExpect(jsonPath("$[1].name").value("Jane"));
+                .andExpect(jsonPath("$[0].firstName").value("John"))
+                .andExpect(jsonPath("$[0].lastName").value("Doe"))
+                .andExpect(jsonPath("$[1].firstName").value("Jane"))
+                .andExpect(jsonPath("$[1].lastName").value("Smith"));
 
         verify(employeeService).getAllEmployees();
     }
@@ -142,7 +148,7 @@ class EmployeeControllerTest {
     @Test
     @DisplayName("POST with duplicate email returns 400")
     void createEmployee_duplicateEmail_returns400() throws Exception {
-        EmployeeRequest request = new EmployeeRequest("John", "existing@example.com", "IT");
+        EmployeeRequest request = new EmployeeRequest("John", "Doe", "existing@example.com", "IT");
         when(employeeService.createEmployee(any(EmployeeRequest.class)))
                 .thenThrow(new DuplicateEmailException("existing@example.com"));
 
@@ -150,5 +156,23 @@ class EmployeeControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("DELETE /api/employees/{id} returns 204")
+    void deleteEmployee_returnsNoContent() throws Exception {
+        mockMvc.perform(delete("/api/employees/1"))
+                .andExpect(status().isNoContent());
+
+        verify(employeeService).deleteEmployee(1L);
+    }
+
+    @Test
+    @DisplayName("DELETE /api/employees/{id} when not found returns 404")
+    void deleteEmployee_notFound_returns404() throws Exception {
+        doThrow(new EmployeeNotFoundException(999L)).when(employeeService).deleteEmployee(999L);
+
+        mockMvc.perform(delete("/api/employees/999"))
+                .andExpect(status().isNotFound());
     }
 }

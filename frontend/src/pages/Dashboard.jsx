@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { isAuthenticated, logout } from '../auth';
-import { getAllEmployees } from '../api/employees';
+import { getAllEmployees, deleteEmployee } from '../api/employees';
 
 export default function Dashboard() {
   const [employees, setEmployees] = useState([]);
@@ -33,6 +33,16 @@ export default function Dashboard() {
     navigate('/', { replace: true });
   }
 
+  async function handleDelete(emp) {
+    if (!window.confirm(`Delete ${emp.firstName} ${emp.lastName}?`)) return;
+    try {
+      await deleteEmployee(emp.id);
+      setEmployees((prev) => prev.filter((e) => e.id !== emp.id));
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+
   return (
     <div style={styles.page}>
       <header style={styles.header}>
@@ -61,7 +71,8 @@ export default function Dashboard() {
                 <thead>
                   <tr>
                     <th style={styles.th}>ID</th>
-                    <th style={styles.th}>Name</th>
+                    <th style={styles.th}>First name</th>
+                    <th style={styles.th}>Last name</th>
                     <th style={styles.th}>Email</th>
                     <th style={styles.th}>Department</th>
                     <th style={styles.th}>Actions</th>
@@ -71,7 +82,8 @@ export default function Dashboard() {
                   {employees.map((emp) => (
                     <tr key={emp.id} style={styles.tr}>
                       <td style={styles.td}>{emp.id}</td>
-                      <td style={styles.td}>{emp.name}</td>
+                      <td style={styles.td}>{emp.firstName}</td>
+                      <td style={styles.td}>{emp.lastName}</td>
                       <td style={styles.td}>{emp.email}</td>
                       <td style={styles.td}>{emp.department || '—'}</td>
                       <td style={styles.td}>
@@ -81,6 +93,13 @@ export default function Dashboard() {
                           style={styles.editBtn}
                         >
                           Edit
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(emp)}
+                          style={styles.deleteBtn}
+                        >
+                          Delete
                         </button>
                       </td>
                     </tr>
@@ -170,6 +189,16 @@ const styles = {
     padding: '6px 12px',
     background: '#e5e7eb',
     color: '#374151',
+    border: 'none',
+    borderRadius: 6,
+    fontSize: 14,
+    fontWeight: 500,
+    marginRight: 8,
+  },
+  deleteBtn: {
+    padding: '6px 12px',
+    background: '#fef2f2',
+    color: '#991b1b',
     border: 'none',
     borderRadius: 6,
     fontSize: 14,

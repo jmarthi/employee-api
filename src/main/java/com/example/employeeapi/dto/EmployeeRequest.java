@@ -8,10 +8,15 @@ import jakarta.validation.constraints.Size;
 @Schema(description = "Request body for creating or updating an employee")
 public class EmployeeRequest {
 
-    @Schema(description = "Employee full name", example = "John Doe", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotBlank(message = "Name is required")
+    @Schema(description = "Employee first name", example = "John", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "First name is required")
     @Size(min = 1, max = 100)
-    private String name;
+    private String firstName;
+
+    @Schema(description = "Employee last name", example = "Doe", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "Last name is required")
+    @Size(min = 1, max = 100)
+    private String lastName;
 
     @Schema(description = "Employee email address", example = "john.doe@example.com", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "Email is required")
@@ -26,18 +31,27 @@ public class EmployeeRequest {
     public EmployeeRequest() {
     }
 
-    public EmployeeRequest(String name, String email, String department) {
-        this.name = name;
+    public EmployeeRequest(String firstName, String lastName, String email, String department) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.department = department;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {

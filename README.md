@@ -125,14 +125,15 @@ mvn spring-boot:run
 | PUT    | `/api/employees/{id}` | Update employee |
 | GET    | `/api/employees/{id}` | Get one employee |
 | GET    | `/api/employees`      | Get all employees |
+| DELETE | `/api/employees/{id}` | Delete employee |
 
 ---
 
 ## Web UI (React) – summary
 
 - **Login:** Static credentials: `admin` / `admin`.
-- **Dashboard:** Lists all employees; **Add employee** (top right), **Edit** per row, **Logout**.
-- **New / Edit employee:** Form (Name, Email, Department). Save uses POST or PUT; on success, redirects to dashboard.
+- **Dashboard:** Lists all employees; **Add employee** (top right), **Edit** and **Delete** per row, **Logout**.
+- **New / Edit employee:** Form (First name, Last name, Email, Department). Save uses POST or PUT; on success, redirects to dashboard.
 
 When API and UI run separately, configure:
 
@@ -159,7 +160,7 @@ Coverage report: `target/site/jacoco/index.html`
 ```bash
 curl -X POST http://localhost:8080/api/employees \
   -H "Content-Type: application/json" \
-  -d '{"name":"John Doe","email":"john@example.com","department":"Engineering"}'
+  -d '{"firstName":"John","lastName":"Doe","email":"john@example.com","department":"Engineering"}'
 ```
 
 **Get all employees:**
@@ -179,5 +180,11 @@ curl http://localhost:8080/api/employees/1
 ```bash
 curl -X PUT http://localhost:8080/api/employees/1 \
   -H "Content-Type: application/json" \
-  -d '{"name":"Jane Doe","email":"jane@example.com","department":"HR"}'
+  -d '{"firstName":"Jane","lastName":"Doe","email":"jane@example.com","department":"HR"}'
+```
+
+**Delete employee:**
+
+```bash
+curl -X DELETE http://localhost:8080/api/employees/1
 ```

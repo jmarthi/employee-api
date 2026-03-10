@@ -19,24 +19,26 @@ class EmployeeRepositoryTest {
     @Test
     @DisplayName("save and findById returns employee")
     void saveAndFindById() {
-        Employee employee = new Employee("John Doe", "john@example.com", "Engineering");
+        Employee employee = new Employee("John", "Doe", "john@example.com", "Engineering");
         Employee saved = employeeRepository.save(employee);
 
         Optional<Employee> found = employeeRepository.findById(saved.getId());
         assertThat(found).isPresent();
-        assertThat(found.get().getName()).isEqualTo("John Doe");
+        assertThat(found.get().getFirstName()).isEqualTo("John");
+        assertThat(found.get().getLastName()).isEqualTo("Doe");
         assertThat(found.get().getEmail()).isEqualTo("john@example.com");
     }
 
     @Test
     @DisplayName("findByEmail returns employee when exists")
     void findByEmail_found() {
-        Employee employee = new Employee("Jane", "jane@example.com", "HR");
+        Employee employee = new Employee("Jane", "Smith", "jane@example.com", "HR");
         employeeRepository.save(employee);
 
         Optional<Employee> found = employeeRepository.findByEmail("jane@example.com");
         assertThat(found).isPresent();
-        assertThat(found.get().getName()).isEqualTo("Jane");
+        assertThat(found.get().getFirstName()).isEqualTo("Jane");
+        assertThat(found.get().getLastName()).isEqualTo("Smith");
     }
 
     @Test
@@ -49,7 +51,7 @@ class EmployeeRepositoryTest {
     @Test
     @DisplayName("existsByEmail returns true when email exists")
     void existsByEmail_true() {
-        employeeRepository.save(new Employee("X", "x@example.com", "IT"));
+        employeeRepository.save(new Employee("X", "Y", "x@example.com", "IT"));
         assertThat(employeeRepository.existsByEmail("x@example.com")).isTrue();
     }
 
@@ -62,8 +64,8 @@ class EmployeeRepositoryTest {
     @Test
     @DisplayName("existsByEmailAndIdNot excludes given id")
     void existsByEmailAndIdNot() {
-        Employee e1 = employeeRepository.save(new Employee("A", "same@example.com", "IT"));
-        Employee e2 = employeeRepository.save(new Employee("B", "other@example.com", "HR"));
+        Employee e1 = employeeRepository.save(new Employee("A", "One", "same@example.com", "IT"));
+        Employee e2 = employeeRepository.save(new Employee("B", "Two", "other@example.com", "HR"));
         assertThat(employeeRepository.existsByEmailAndIdNot("same@example.com", e1.getId())).isFalse();
         assertThat(employeeRepository.existsByEmailAndIdNot("same@example.com", e2.getId())).isTrue();
     }
@@ -71,8 +73,8 @@ class EmployeeRepositoryTest {
     @Test
     @DisplayName("findAll returns all employees")
     void findAll() {
-        employeeRepository.save(new Employee("A", "a@example.com", "IT"));
-        employeeRepository.save(new Employee("B", "b@example.com", "HR"));
+        employeeRepository.save(new Employee("A", "One", "a@example.com", "IT"));
+        employeeRepository.save(new Employee("B", "Two", "b@example.com", "HR"));
         assertThat(employeeRepository.findAll()).hasSize(2);
     }
 }

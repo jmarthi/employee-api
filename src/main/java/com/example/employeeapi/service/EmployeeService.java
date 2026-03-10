@@ -27,7 +27,8 @@ public class EmployeeService {
             throw new DuplicateEmailException(request.getEmail());
         }
         Employee employee = new Employee(
-                request.getName(),
+                request.getFirstName(),
+                request.getLastName(),
                 request.getEmail(),
                 request.getDepartment()
         );
@@ -42,7 +43,8 @@ public class EmployeeService {
         if (employeeRepository.existsByEmailAndIdNot(request.getEmail(), id)) {
             throw new DuplicateEmailException(request.getEmail());
         }
-        employee.setName(request.getName());
+        employee.setFirstName(request.getFirstName());
+        employee.setLastName(request.getLastName());
         employee.setEmail(request.getEmail());
         employee.setDepartment(request.getDepartment());
         employee = employeeRepository.save(employee);
@@ -61,10 +63,18 @@ public class EmployeeService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public void deleteEmployee(Long id) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new EmployeeNotFoundException(id));
+        employeeRepository.delete(employee);
+    }
+
     private EmployeeResponse toResponse(Employee employee) {
         return new EmployeeResponse(
                 employee.getId(),
-                employee.getName(),
+                employee.getFirstName(),
+                employee.getLastName(),
                 employee.getEmail(),
                 employee.getDepartment()
         );
